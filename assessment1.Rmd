@@ -1,5 +1,5 @@
 ---
-title: "Assessment 1"
+title: "Assessment 1.1"
 author: "Chris Buchanan s4661854"
 date: "14/05/2021"
 output: html_document
@@ -9,3 +9,51 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+# RMarkdown Editing:  !!!R Markdown is a file format for making dynamic documents with R. An R Markdown document is written in markdown (an easy-to-write plain text format) and contains chunks of embedded R code.  Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents.!!!
+
+
+library(tidyverse)
+library(janitor)
+
+
+```
+
+```{r}
+#inserting an r chunk and create a variable for the data fastfood calories
+
+fastfood<- read.csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv')
+
+```
+
+```{r}
+#Display the first ten rows of the dataset using the head function
+
+fastfood%>%head()
+
+```
+
+```{r}
+# display the observations that have more than 1000 calories
+
+filter(fastfood, calories > 1000)
+
+```
+
+```{r}
+#Save observations with more than 40 in total_fat and more than 80 in total_carb in a new variable called dont_eat_this
+
+dont_eat_this<-fastfood %>%
+   filter(total_fat > 40, total_carb > 80)
+ 
+
+
+```
+
+```{r}
+#Using the initial dataset variable, display observations from restaurant Mcdonalds
+
+filter(fastfood, restaurant == 'Mcdonalds')
+
+
+```
