@@ -8,4 +8,132 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+library(tidyverse)
+library(skimr)
+library(lubridate)
+library(scales)
+library(dplyr)
+theme_set(theme_light())
+
+
+```
+# Data viz and data wrangling for the fastfood data set
+```{r}
+fastfood<-read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-09-04/fastfood_calories.csv")
+
+
+```
+
+# 2. Using `skimr` package provide a list of variables which types needs to be changed.  After running the skimR function, it is apparent that there are 3 variables that are listed as characters (restaurant, item, salad) and 15 as numeric.
+```{r}
+
+fastfood%>%skim()
+
+
+```
+
+
+
+
+# 3. Identify variable(s) which should be factors and transform their type into a factor variable.
+
+```{r}
+
+fastfood$restaurant<-as_factor(fastfood$restaurant)
+fastfood$item<-as_factor(fastfood$item)
+fastfood$salad<-as_factor(fastfood$salad)
+
+
+```
+
+# 4. Replace NA in the dataset with 0 across all variables
+```{r}
+fastfood[is.na(fastfood)] <- 0
+
+
+```
+
+# 5.  Create two new variables:
+#Read about `cut_number()` function using Help and add a new variable to the dataset `calories_type`. Use the function arguments to add labels `c("low", "med", "high")` and make the dataset ordered.
+
+```{r}
+
+fastfood<-fastfood%>%
+  mutate(calories_type=cut_number(calories,3,labels=c("low", "med", "high"), 
+                                  ordered_result=TRUE))
+
+fastfood$calories_type<-as_factor(fastfood$calories_type)
+```
+
+# 6. Create a dataviz that shows the distribution of `calories_type` in food items for each type of restaurant. Think carefully about the choice of data viz. Use facets, coordinates and theme layers to make your data viz visually appealing and meaningful. Use factors related data viz functions.
+
+```{r}
+
+#proportion of calories x = "type of calories" which is a discrete variable. ask ggplot to do this for us.  specify one variable.  on the cheat sheet  and y =
+
+#calories_type%>%
+ # mutate(item-factor(item))%>%
+  #mutate(calories_type = factor(calories_type))%>%
+ # mutate(restaurant = factor(restaurant))%>%
+  #mutate(calories = factor(calories))%>%
+  #count(restaurant,calories,calories_type)%>%
+  #group_by(calories,calories_type)%>%
+  #mutate(proportion=n/sum(n))%>%
+  #%>%ggplot(aes(calories_type))+
+  #geom_bar()+
+  #facet_wrap(~restaurant)
+
+#I am having trouble with the final commit of the assignment due to this chunk.  I have taken out the code to see if it works.
+
+```
+
+# 7. The second variable should show the percentage of `trans_fat` in `total_fat`. Add the variable to the dataset and call it `trans_fat_percent`. Do not forget to save the updated dataset. 
+
+```{r}
+
+fastfood<-fastfood%>%
+ mutate(trans_fat_percent = trans_fat / total_fat * 100)
+
+
+
+```
+
+# 8. Create a dataviz that shows the distribution of `trans_fat` in food items for each type of restaurant. Think carefully about the choice of data viz. Use facets, coordinates and theme layers to make your data viz visually appealing and meaningful.
+
+```{r}
+ggplot(fastfood) +
+ aes(x = trans_fat, fill = restaurant) +
+ geom_density(adjust = 1L) +
+ scale_fill_hue() +
+ theme_minimal()
+
+
+
+
+
+
+```
+
+# 9. Calculate the average (mean) total_fat for each type of restaurant. No need to save it as a variable.
+```{r}
+aggregate(fastfood$total_fat, list(fastfood$restaurant), FUN=mean) 
+
+
+
+
+
+
+```
+
+# 10. And create a dataviz that allow to compare different restaurants on this. You can present it on one dataviz (= no facets). Think carefully about the choice of data viz. Use coordinates and theme layers to make your data viz visually appealing and meaningful. 
+
+```{r}
+aggregate(fastfood$total_fat, list(fastfood$restaurant), FUN=mean)
+ggplot(fastfood, aes(x = restaurant, Y = 'x', color = restaurant))+
+geom_bar()
+
+
+
+```
 
